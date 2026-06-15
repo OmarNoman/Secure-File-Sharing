@@ -1,0 +1,49 @@
+const cors = require("cors");
+const express = require("express");
+require("dotenv").config({ quiet: true });
+
+const filesRouter = require("./routes/files");
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+app.use(cors());
+app.use(express.json());
+
+app.get("/health", (req, res) => {
+  res.json({
+    status: "ok",
+    service: "secure-file-sharing-api",
+  });
+});
+
+app.use("/api/files", filesRouter);
+
+app.use((req, res) => {
+  res.status(404).json({
+    error: {
+      message: "Route not found",
+    },
+  });
+});
+
+app.use((error, req, res, next) => {
+  const statusCode = error.statusCode || error.status || 500;
+  const isServerError = statusCode >= 500;
+
+  if (isServerError) {
+    console.error("Server error:", error);
+  } else {
+    console.warn("Request error:", error.message);
+  }
+
+  res.status(statusCode).json({
+    error: {
+      message: isServerError ? "Internal server error" : error.message,
+    },
+  });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
