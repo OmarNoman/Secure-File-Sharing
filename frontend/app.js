@@ -4,11 +4,22 @@ const uploadButton = document.getElementById("upload-button");
 const uploadStatus = document.getElementById("upload-status");
 const fileList = document.getElementById("file-list");
 
-const uploadedKeys = [];
+let uploadedFiles = [];
 
 function setStatus(message, kind) {
   uploadStatus.textContent = message;
   uploadStatus.className = "status" + (kind ? ` ${kind}` : "");
+}
+
+function formatSize(bytes) {
+  if (!bytes) return "0 B";
+  const units = ["B", "KB", "MB", "GB"];
+  const exponent = Math.min(
+    Math.floor(Math.log(bytes) / Math.log(1024)),
+    units.length - 1,
+  );
+  const value = bytes / 1024 ** exponent;
+  return `${exponent === 0 ? value : value.toFixed(1)} ${units[exponent]}`;
 }
 
 async function requestJson(url, body) {
@@ -30,6 +41,17 @@ async function requestJson(url, body) {
   return data;
 }
 
+async function loadFileList() {
+  try {
+    const response = await fetch("/api/files");
+    if (!response.ok) throw new Error("Failed to load file list");
+    uploadedFiles = await response.json();
+  } catch {
+    uploadedFiles = [];
+  }
+  renderFileList();
+}
+
 async function uploadFileWithPresignedUrl(file) {
   const { key, uploadUrl, requiredHeaders } = await requestJson(
     "/api/files/upload-url",
@@ -46,23 +68,24 @@ async function uploadFileWithPresignedUrl(file) {
     throw new Error(`S3 upload failed with status ${putResponse.status}`);
   }
 
-  return key;
+  return requestJson("/api/files/confirm", { key });
 }
 
 function renderFileList() {
-  if (uploadedKeys.length === 0) {
+  if (uploadedFiles.length === 0) {
     fileList.innerHTML = '<li class="empty">No files uploaded yet.</li>';
     return;
   }
 
   fileList.innerHTML = "";
 
-  for (const key of uploadedKeys) {
-    const item = document.createElement("li");
+  for (const item of uploadedFiles) {
+    const li = document.createElement("li");
 
-    const keySpan = document.createElement("span");
-    keySpan.className = "key";
-    keySpan.textContent = key;
+    const info = document.createElement("span");
+    info.className = "key";
+    const uploadedDate = new Date(item.uploadedAt).toLocaleString();
+    info.textContent = `${item.originalFileName} (${formatSize(item.sizeBytes)}, ${uploadedDate})`;
 
     const actions = document.createElement("span");
     actions.className = "actions";
@@ -81,7 +104,7 @@ function renderFileList() {
       try {
         const { downloadUrl, expiresInSeconds } = await requestJson(
           "/api/files/download-url",
-          { key },
+          { key: item.fileKey },
         );
 
         linkStatus.textContent = "";
@@ -102,9 +125,9 @@ function renderFileList() {
     actions.appendChild(downloadButton);
     actions.appendChild(linkStatus);
 
-    item.appendChild(keySpan);
-    item.appendChild(actions);
-    fileList.appendChild(item);
+    li.appendChild(info);
+    li.appendChild(actions);
+    fileList.appendChild(li);
   }
 }
 
@@ -122,10 +145,10 @@ uploadForm.addEventListener("submit", async (event) => {
   setStatus(`Uploading ${file.name}...`);
 
   try {
-    const key = await uploadFileWithPresignedUrl(file);
-    uploadedKeys.unshift(key);
+    const item = await uploadFileWithPresignedUrl(file);
+    uploadedFiles.unshift(item);
     renderFileList();
-    setStatus(`Uploaded successfully as ${key}`, "success");
+    setStatus(`Uploaded successfully as ${item.originalFileName}`, "success");
     uploadForm.reset();
   } catch (error) {
     setStatus(error.message, "error");
@@ -134,4 +157,4 @@ uploadForm.addEventListener("submit", async (event) => {
   }
 });
 
-renderFileList();
+loadFileList();

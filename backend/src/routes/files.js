@@ -4,6 +4,7 @@ const {
   createDownloadUrl,
   createUploadUrl,
 } = require("../services/fileService");
+const { recordUpload, listUploads } = require("../services/metadataService");
 
 const router = express.Router();
 
@@ -19,6 +20,24 @@ router.post("/upload-url", async (req, res, next) => {
 router.post("/download-url", async (req, res, next) => {
   try {
     const result = await createDownloadUrl(req.body);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/confirm", async (req, res, next) => {
+  try {
+    const result = await recordUpload(req.body);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/", async (req, res, next) => {
+  try {
+    const result = await listUploads();
     res.json(result);
   } catch (error) {
     next(error);

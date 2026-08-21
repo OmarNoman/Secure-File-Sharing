@@ -9,6 +9,15 @@
         "s3:GetObject"
       ],
       "Resource": "arn:aws:s3:::REPLACE_WITH_BUCKET_NAME/uploads/*"
+    },
+    {
+      "Sid": "AllowFileMetadataReadWrite",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:PutItem",
+        "dynamodb:Scan"
+      ],
+      "Resource": "REPLACE_WITH_DYNAMODB_TABLE_ARN"
     }
   ]
 }

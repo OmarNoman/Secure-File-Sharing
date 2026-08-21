@@ -67,13 +67,18 @@ EOF
 aws s3api put-bucket-lifecycle-configuration --bucket "${S3_BUCKET_NAME}" --lifecycle-configuration file:///tmp/lifecycle.json
 rm -f /tmp/lifecycle.json
 
-sed "s/REPLACE_WITH_BUCKET_NAME/${S3_BUCKET_NAME}/g" \
-  "$(dirname "$0")/iam-policy.example.json" > "$(dirname "$0")/iam-policy.generated.json"
+SCRIPT_DIR="$(dirname "$0")"
+GENERATED_POLICY="${SCRIPT_DIR}/iam-policy.generated.json"
+
+if [ ! -f "${GENERATED_POLICY}" ]; then
+  cp "${SCRIPT_DIR}/iam-policy.example.json" "${GENERATED_POLICY}"
+fi
+sed -i "s/REPLACE_WITH_BUCKET_NAME/${S3_BUCKET_NAME}/g" "${GENERATED_POLICY}"
 
 echo ""
 echo "Bucket ${S3_BUCKET_NAME} is configured: public access blocked, default encryption on,"
 echo "CORS allows PUT from ${ALLOWED_ORIGIN}, uploads/* expire after ${UPLOAD_EXPIRATION_DAYS} days."
 echo ""
-echo "Next step (manual, not automated by this script): create an IAM user or role for the"
-echo "backend and attach infrastructure/iam-policy.generated.json to it. Do not create IAM"
-echo "identities from an automated script without reviewing the policy first."
+echo "Run create-table.sh next to provision the DynamoDB metadata table and finish"
+echo "iam-policy.generated.json. Neither script creates an IAM user or role automatically;"
+echo "review the generated policy and attach it yourself."

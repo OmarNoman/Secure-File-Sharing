@@ -91,16 +91,25 @@ function createObjectKey(fileName) {
   return `${UPLOAD_PREFIX}${crypto.randomUUID()}${getSafeExtension(fileName)}`;
 }
 
+function encodeFileNameForS3Metadata(fileName) {
+  // S3 user metadata values must be US-ASCII; this is reversed with decodeURIComponent when read back.
+  return encodeURIComponent(fileName);
+}
+
 async function createUploadUrl(input) {
   const { fileName, contentType } = validateUploadInput(input);
   const key = createObjectKey(fileName);
   const { bucketName, uploadUrlExpirySeconds } = getS3Config();
+  const encodedFileName = encodeFileNameForS3Metadata(fileName);
 
   const command = new PutObjectCommand({
     Bucket: bucketName,
     Key: key,
     ContentType: contentType,
     ServerSideEncryption: "AES256",
+    Metadata: {
+      "original-filename": encodedFileName,
+    },
   });
 
   const uploadUrl = await getSignedUrl(getS3Client(), command, {
@@ -114,6 +123,7 @@ async function createUploadUrl(input) {
     requiredHeaders: {
       "Content-Type": contentType,
       "x-amz-server-side-encryption": "AES256",
+      "x-amz-meta-original-filename": encodedFileName,
     },
     expiresInSeconds: uploadUrlExpirySeconds,
   };
@@ -142,4 +152,5 @@ async function createDownloadUrl(input) {
 module.exports = {
   createDownloadUrl,
   createUploadUrl,
+  validateDownloadKey,
 };
