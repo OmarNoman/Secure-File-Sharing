@@ -3,7 +3,9 @@ const path = require("path");
 const express = require("express");
 require("dotenv").config({ quiet: true });
 
+const authRouter = require("./routes/auth");
 const filesRouter = require("./routes/files");
+const requireAuth = require("./middleware/requireAuth");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -18,7 +20,8 @@ app.get("/health", (req, res) => {
   });
 });
 
-app.use("/api/files", filesRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/files", requireAuth, filesRouter);
 
 app.use(express.static(FRONTEND_DIR));
 

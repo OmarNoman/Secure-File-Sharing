@@ -30,8 +30,8 @@ GENERATED_POLICY="${SCRIPT_DIR}/iam-policy.generated.json"
 if [ ! -f "${GENERATED_POLICY}" ]; then
   cp "${SCRIPT_DIR}/iam-policy.example.json" "${GENERATED_POLICY}"
 fi
-sed -i "s#REPLACE_WITH_DYNAMODB_TABLE_ARN#${TABLE_ARN}#g" "${GENERATED_POLICY}"
+sed -i "s#REPLACE_WITH_DYNAMODB_FILES_TABLE_ARN#${TABLE_ARN}#g" "${GENERATED_POLICY}"
 
 echo ""
 echo "Table ${FILES_TABLE_NAME} is ready (5/5 provisioned capacity)."
-echo "Run create-bucket.sh too if you haven't, to finish iam-policy.generated.json."
+echo "Run create-bucket.sh and create-users-table.sh too if you haven't, to finish iam-policy.generated.json."

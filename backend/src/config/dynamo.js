@@ -24,6 +24,10 @@ function getFilesTableName() {
   return readRequiredEnv("FILES_TABLE_NAME");
 }
 
+function getUsersTableName() {
+  return readRequiredEnv("USERS_TABLE_NAME");
+}
+
 function getDynamoClient() {
   if (!cachedClient) {
     const region = readRequiredEnv("AWS_REGION");
@@ -36,4 +40,5 @@ function getDynamoClient() {
 module.exports = {
   getDynamoClient,
   getFilesTableName,
+  getUsersTableName,
 };

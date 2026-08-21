@@ -15,9 +15,19 @@
       "Effect": "Allow",
       "Action": [
         "dynamodb:PutItem",
+        "dynamodb:GetItem",
         "dynamodb:Scan"
       ],
-      "Resource": "REPLACE_WITH_DYNAMODB_TABLE_ARN"
+      "Resource": "REPLACE_WITH_DYNAMODB_FILES_TABLE_ARN"
+    },
+    {
+      "Sid": "AllowUserSignupAndLogin",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:PutItem",
+        "dynamodb:GetItem"
+      ],
+      "Resource": "REPLACE_WITH_DYNAMODB_USERS_TABLE_ARN"
     }
   ]
 }

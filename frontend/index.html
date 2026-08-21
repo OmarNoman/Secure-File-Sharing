@@ -11,20 +11,47 @@
     <h1>Secure File Sharing</h1>
     <p class="subtitle">Files are uploaded directly to a private S3 bucket using short-lived presigned URLs. Nothing here ever sees AWS credentials.</p>
 
-    <section class="card">
-      <h2>Upload a file</h2>
-      <form id="upload-form">
-        <input type="file" id="file-input" required />
-        <button type="submit" id="upload-button">Upload</button>
+    <section class="card" id="auth-section">
+      <div class="auth-tabs">
+        <button type="button" class="tab-button active" data-tab="login">Log in</button>
+        <button type="button" class="tab-button" data-tab="signup">Sign up</button>
+      </div>
+
+      <form id="login-form" class="auth-form">
+        <input type="text" id="login-username" placeholder="Username" required autocomplete="username" />
+        <input type="password" id="login-password" placeholder="Password" required autocomplete="current-password" />
+        <button type="submit">Log in</button>
       </form>
-      <p id="upload-status" class="status" role="status"></p>
+
+      <form id="signup-form" class="auth-form hidden">
+        <input type="text" id="signup-username" placeholder="Username" required autocomplete="username" />
+        <input type="password" id="signup-password" placeholder="Password (min 8 characters)" required autocomplete="new-password" />
+        <button type="submit">Sign up</button>
+      </form>
+
+      <p id="auth-status" class="status" role="status"></p>
     </section>
 
-    <section class="card">
-      <h2>Uploaded files</h2>
-      <p class="hint">All files uploaded so far. Download links are generated on demand and expire.</p>
-      <ul id="file-list" class="file-list"></ul>
-    </section>
+    <div id="app-section" class="hidden">
+      <p class="session-bar">Logged in as <strong id="current-username"></strong>
+        <button type="button" id="logout-button" class="secondary">Log out</button>
+      </p>
+
+      <section class="card">
+        <h2>Upload a file</h2>
+        <form id="upload-form">
+          <input type="file" id="file-input" required />
+          <button type="submit" id="upload-button">Upload</button>
+        </form>
+        <p id="upload-status" class="status" role="status"></p>
+      </section>
+
+      <section class="card">
+        <h2>Uploaded files</h2>
+        <p class="hint">All files uploaded so far. New uploads stay pending until a virus scan marks them clean. Download links are generated on demand and expire.</p>
+        <ul id="file-list" class="file-list"></ul>
+      </section>
+    </div>
   </main>
 
   <script src="app.js"></script>

@@ -1,0 +1,17 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowReadUploadedObjects",
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::REPLACE_WITH_BUCKET_NAME/uploads/*"
+    },
+    {
+      "Sid": "AllowWriteScanResult",
+      "Effect": "Allow",
+      "Action": "dynamodb:UpdateItem",
+      "Resource": "REPLACE_WITH_DYNAMODB_FILES_TABLE_ARN"
+    }
+  ]
+}
