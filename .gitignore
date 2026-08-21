@@ -5,3 +5,4 @@ dist/
 backend/.env
 frontend/.env
 backend/uploads/
+infrastructure/iam-policy.generated.json

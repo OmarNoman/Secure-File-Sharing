@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Secure File Sharing</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>Secure File Sharing</h1>
+    <p class="subtitle">Files are uploaded directly to a private S3 bucket using short-lived presigned URLs. Nothing here ever sees AWS credentials.</p>
+
+    <section class="card">
+      <h2>Upload a file</h2>
+      <form id="upload-form">
+        <input type="file" id="file-input" required />
+        <button type="submit" id="upload-button">Upload</button>
+      </form>
+      <p id="upload-status" class="status" role="status"></p>
+    </section>
+
+    <section class="card">
+      <h2>Uploaded files</h2>
+      <p class="hint">Keys from files you upload this session. Download links are generated on demand and expire.</p>
+      <ul id="file-list" class="file-list"></ul>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

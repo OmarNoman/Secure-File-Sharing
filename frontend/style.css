@@ -1,0 +1,141 @@
+:root {
+  color-scheme: light dark;
+  --border: #d0d5dd;
+  --muted: #667085;
+  --accent: #2f67b8;
+  --danger: #b3261e;
+  --success: #3f8624;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: canvas;
+  color: canvastext;
+}
+
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+h1 {
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  color: var(--muted);
+  margin-top: 0;
+}
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 1.05rem;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-top: -0.5rem;
+}
+
+#upload-form {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+input[type="file"] {
+  flex: 1;
+  min-width: 200px;
+}
+
+button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.55rem 1.1rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button.secondary {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 0.35rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.status {
+  min-height: 1.2em;
+  font-size: 0.9rem;
+  margin-bottom: 0;
+}
+
+.status.error {
+  color: var(--danger);
+}
+
+.status.success {
+  color: var(--success);
+}
+
+.file-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.file-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+}
+
+.file-list .key {
+  overflow-wrap: anywhere;
+}
+
+.file-list .actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.file-list a {
+  color: var(--accent);
+}
+
+.empty {
+  color: var(--muted);
+  font-size: 0.9rem;
+}

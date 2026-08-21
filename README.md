@@ -6,7 +6,9 @@ A student portfolio project for secure browser-to-S3 file sharing. The backend c
 
 ```text
 frontend/
-  .gitkeep
+  index.html
+  style.css
+  app.js
 
 backend/
   src/
@@ -19,11 +21,18 @@ backend/
     server.js
   .env.example
   package.json
+
+infrastructure/
+  create-bucket.sh
+  iam-policy.example.json
+  README.md
 ```
 
-The current implementation is a Node.js, Express, CommonJS backend. The frontend is still a placeholder.
+The backend is a Node.js, Express, CommonJS API. It also serves the plain HTML/CSS/JS frontend as static files, so the whole app runs from one process on one origin (no build step, no CORS).
 
-## Backend Setup
+`infrastructure/` provisions the S3 bucket itself (public access blocked, default encryption, CORS for browser uploads, lifecycle expiration) and generates a least-privilege IAM policy for the backend's credentials. See `infrastructure/README.md`. This is a separate, manual step from running the app; it is not run automatically.
+
+## Setup
 
 ```bash
 cd backend
@@ -63,6 +72,8 @@ For development with Node's watch mode:
 ```bash
 npm run dev
 ```
+
+Then open `http://localhost:5000/` in a browser to use the upload UI.
 
 ## Endpoints
 
@@ -144,9 +155,7 @@ Response:
 
 ## Not Yet Implemented
 
-- Frontend upload UI
 - User authentication
 - File history or dashboard
 - Database storage for file metadata
 - Virus scanning
-- Infrastructure automation
